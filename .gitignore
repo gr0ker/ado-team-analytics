@@ -1,0 +1,26 @@
+# Секреты и конфиг с паролями
+.env
+
+# Сгенерированные отчёты
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Виртуальные окружения
+venv/
+.venv/
+env/
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp

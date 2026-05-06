@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аналитика продуктивности команды — {{ date_from }} – {{ date_to }}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    color: #fff;
+    padding: 32px 40px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  header h1 { font-size: 1.8rem; font-weight: 700; }
+  header p  { margin-top: 6px; opacity: .85; font-size: .95rem; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+  section { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            padding: 28px 32px; margin-bottom: 32px; }
+  section h2 { font-size: 1.2rem; font-weight: 600; color: #0078d4; margin-bottom: 20px;
+               padding-bottom: 10px; border-bottom: 2px solid #e8f0fe; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  thead tr { background: #0078d4; color: #fff; }
+  thead th { padding: 10px 14px; text-align: right; font-weight: 600; white-space: nowrap; }
+  thead th:first-child { text-align: left; }
+  tbody tr:nth-child(even) { background: #f7f9fc; }
+  tbody tr:hover { background: #e8f0fe; }
+  tbody td { padding: 9px 14px; text-align: right; border-bottom: 1px solid #eee; }
+  tbody td:first-child { text-align: left; font-weight: 500; }
+  .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); gap: 24px; }
+  .chart-box { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 20px 16px; }
+  .chart-box h3 { font-size: 1rem; font-weight: 600; color: #444; margin-bottom: 12px; }
+  footer { text-align: center; padding: 20px; color: #888; font-size: .8rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 Аналитика продуктивности команды</h1>
+  <p>Период: <strong>{{ date_from }}</strong> — <strong>{{ date_to }}</strong>
+     &nbsp;·&nbsp; Проекты: <strong>{{ projects }}</strong>
+     &nbsp;·&nbsp; Сформировано: <strong>{{ generated_at }}</strong></p>
+</header>
+
+<div class="container">
+
+  <!-- Сводная таблица -->
+  <section>
+    <h2>Сводка по участникам</h2>
+    {{ summary_table | safe }}
+  </section>
+
+  <!-- Графики (2 колонки) -->
+  <div class="chart-grid">
+    <div class="chart-box"><h3>Коммиты по неделям</h3>{{ chart_commits | safe }}</div>
+    <div class="chart-box"><h3>Pull Request'ы по неделям</h3>{{ chart_prs | safe }}</div>
+    <div class="chart-box"><h3>Ревью по неделям</h3>{{ chart_reviews | safe }}</div>
+    <div class="chart-box"><h3>Рабочие элементы по неделям</h3>{{ chart_work_items | safe }}</div>
+  </div>
+
+  <!-- Тепловая карта активности -->
+  <section>
+    <h2>Тепловая карта активности (неделя × участник)</h2>
+    {{ chart_heatmap | safe }}
+  </section>
+
+</div>
+
+<footer>Azure DevOps Team Productivity Analytics</footer>
+</body>
+</html>
