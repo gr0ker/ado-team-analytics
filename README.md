@@ -28,10 +28,10 @@
 ```bash
 # Клонировать репозиторий
 git clone <url-репозитория>
-cd eval-ado
+cd ado-team-analytics
 
 # Или распакуйте архив и перейдите в директорию
-cd eval-ado
+cd ado-team-analytics
 ```
 
 ### 2. (Рекомендуется) Создайте виртуальное окружение
@@ -205,8 +205,8 @@ python main.py --from 2024-01-01 --to 2024-12-31
 ### Вариант A: через Git
 
 ```bash
-git clone <url-репозитория> eval-ado
-cd eval-ado
+git clone https://github.com/gr0ker/ado-team-analytics.git
+cd ado-team-analytics
 pip install -r requirements.txt
 cp .env.example .env
 # Заполните .env своими данными
@@ -315,3 +315,4 @@ python -m pip install --upgrade pip
 # Установите пакеты заново
 pip install -r requirements.txt --force-reinstall
 ```
+
