@@ -18,6 +18,12 @@ class BaseCollector:
         self.config = config
         credentials = BasicAuthentication("", config.pat)
         self.connection = Connection(base_url=config.server_url, creds=credentials)
+        # Выбираем версию клиентов по настройке
+        self._clients = (
+            self.connection.clients_v7_0
+            if config.api_version == "7.0"
+            else self.connection.clients_v7_1
+        )
 
     # ------------------------------------------------------------------
     # Ленивые клиенты API (создаются при первом обращении)
@@ -26,14 +32,14 @@ class BaseCollector:
     @cached_property
     def git_client(self):
         """Клиент Git API (репозитории, коммиты, PR, ревью)."""
-        return self.connection.clients_v7_1.get_git_client()
+        return self._clients.get_git_client()
 
     @cached_property
     def wit_client(self):
         """Клиент Work Item Tracking API."""
-        return self.connection.clients_v7_1.get_work_item_tracking_client()
+        return self._clients.get_work_item_tracking_client()
 
     @cached_property
     def core_client(self):
         """Клиент Core API (проекты, команды)."""
-        return self.connection.clients_v7_1.get_core_client()
+        return self._clients.get_core_client()

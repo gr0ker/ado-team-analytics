@@ -31,6 +31,14 @@ class AppConfig:
             else []
         )
 
+        api_version_raw = os.getenv("ADO_API_VERSION", "7.1").strip()
+        if api_version_raw not in ("7.0", "7.1"):
+            raise ValueError(
+                f"ADO_API_VERSION='{api_version_raw}' не поддерживается. "
+                f"Допустимые значения: 7.0, 7.1"
+            )
+        self.api_version: str = api_version_raw
+
         date_from_raw = self._require("DATE_FROM")
         date_to_raw = self._require("DATE_TO")
         self.date_from: datetime = self._parse_date(date_from_raw, "DATE_FROM")
