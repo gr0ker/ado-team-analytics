@@ -39,6 +39,15 @@ class AppConfig:
             )
         self.api_version: str = api_version_raw
 
+        ssl_verify_raw = os.getenv("ADO_SSL_VERIFY", "true").strip()
+        if ssl_verify_raw.lower() == "false":
+            self.ssl_verify: bool | str = False
+        elif ssl_verify_raw.lower() == "true":
+            self.ssl_verify = True
+        else:
+            # Treat as path to a custom CA bundle file
+            self.ssl_verify = ssl_verify_raw
+
         date_from_raw = self._require("DATE_FROM")
         date_to_raw = self._require("DATE_TO")
         self.date_from: datetime = self._parse_date(date_from_raw, "DATE_FROM")
@@ -80,5 +89,5 @@ class AppConfig:
         return (
             f"AppConfig(server_url={self.server_url!r}, projects={self.projects}, "
             f"date_from={self.date_from.date()}, date_to={self.date_to.date()}, "
-            f"team_members={self.team_members})"
+            f"team_members={self.team_members}, ssl_verify={self.ssl_verify!r})"
         )
