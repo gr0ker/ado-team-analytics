@@ -14,6 +14,25 @@ from azure.devops.connection import Connection
 from config import AppConfig
 
 
+class _SSLVerifyAdapter(requests.adapters.HTTPAdapter):
+    """HTTPAdapter that enforces a fixed SSL verification setting.
+
+    ``msrest``'s ``RequestsHTTPSender`` passes an explicit ``verify`` kwarg
+    (sourced from ``ClientConnection.__call__``) to every ``session.request()``
+    call.  Because explicit kwargs override ``session.verify``, setting only
+    ``session.verify`` is not enough.  Mounting this adapter ensures the
+    correct value reaches ``urllib3`` regardless of what the caller passes.
+    """
+
+    def __init__(self, ssl_verify: bool | str, **kwargs) -> None:
+        self._ssl_verify = ssl_verify
+        super().__init__(**kwargs)
+
+    def send(self, request, **kwargs) -> requests.Response:  # type: ignore[override]
+        kwargs["verify"] = self._ssl_verify
+        return super().send(request, **kwargs)
+
+
 class _SSLAwareBasicAuthentication(BasicAuthentication):
     """BasicAuthentication with configurable SSL certificate verification.
 
@@ -30,6 +49,13 @@ class _SSLAwareBasicAuthentication(BasicAuthentication):
     def signed_session(self, session: requests.Session | None = None) -> requests.Session:
         session = super().signed_session(session)
         session.verify = self._ssl_verify
+        if self._ssl_verify is not True:
+            # Mount a custom adapter so the verify value is enforced even when
+            # msrest passes it as an explicit kwarg that would otherwise
+            # override session.verify.
+            adapter = _SSLVerifyAdapter(self._ssl_verify)
+            session.mount("https://", adapter)
+            session.mount("http://", adapter)
         return session
 
 
