@@ -28,7 +28,7 @@ class _SSLVerifyAdapter(requests.adapters.HTTPAdapter):
         self._ssl_verify = ssl_verify
         super().__init__(**kwargs)
 
-    def send(self, request, **kwargs) -> requests.Response:  # type: ignore[override]
+    def send(self, request, **kwargs):
         kwargs["verify"] = self._ssl_verify
         return super().send(request, **kwargs)
 
